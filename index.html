@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<style type="text/css">
+	.disableCursor{
+		cursor:not-allowed;
+	}
+	#turn{
+		text-align: center;
+		color:green;
+	}
+	table{
+		border-collapse:collapse;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	button{
+		margin-top: 10px;
+		width:200px;
+		height:50px;
+		font-size: 20px;
+		border-radius: 25px;
+		background-color: gray;
+		color:white;
+	}
+	table td{
+		width:100px;
+		height:100px;
+		text-align: center;
+	}
+	table tr:first-child td{
+		border-bottom:1px solid black;
+	}
+	table tr:last-child td{
+		border-top:1px solid black;
+	}
+	table tr td:first-child{
+		border-right:1px solid black;;
+	}
+	table tr td:last-child{
+		border-left:1px solid black;;
+	}
+</style>
+<body>
+	<h1 style="text-align: center">Tic Tac Toe</h1>
+	<div id="turn"></div>
+	<div>
+		<table id="myTable">
+			<tr id="row1">
+				<td id="0"></td>
+				<td id="1"></td>
+				<td id="2"></td>
+			</tr>
+			<tr id="row2">
+				<td id="3"></td>
+				<td id="4"></td>
+				<td id="5"></td>
+			</tr>
+			<tr id="row3">
+				<td id="6"></td>
+				<td id="7"></td>
+				<td id="8"></td>
+			</tr>
+		</table>
+	</div>
+	<div id="startButton" style="text-align: center">
+		<button onclick="startGame()" id="startGame">Start Game/ Replay</button>
+	</div>
+	<script type="text/javascript">
+		let turn = document.getElementById("turn");
+		let myTable = document.getElementById("myTable");
+		let playerTurn;
+		let computerTurn;
+		let playerArray;
+		let computerArray;
+		let count;
+		let win;
+		
+		let winningPatterns = [[0,1,2],
+							  [3,4,5],
+							  [6,7,8],
+							  [0,3,6],
+							  [1,4,7],
+							  [2,5,8],
+							  [0,4,8],
+							  [2,4,6]];
+		function startGame(){
+			win=false;
+			count=0;
+			playerArray = [];
+			computerArray = [];
+			playerTurn = true;
+			computerTurn = false;
+			turn.innerHTML = '<h3>Player1 Turn</h3>';
+			myTable.addEventListener("click",displayMouseEvents);
+			let allTd = document.querySelectorAll("td");
+			console.log(allTd[0].innerHTML);
+			for(let i of allTd){
+				i.innerHTML = "";
+				i.classList.remove("disableCursor");
+			}
+
+		}
+		function includes(target, winningPatterns){
+
+			for(let pattern of winningPatterns){
+				let count = 0;
+				for(let i of pattern){
+				//console.log(i);
+					if(target.includes(i)){
+						count++;
+						if(count===3)
+							return true;
+					}
+				}				
+			}
+			return false;
+			
+		}
+
+		function displayMouseEvents(e){
+			
+			
+			
+			//console.log(typeof e.target.id);
+			if(playerTurn){
+				
+				if(!e.target.classList.contains("disableCursor")){
+					count++;
+				 	e.target.innerHTML = "O";
+				 	playerTurn = false;
+					computerTurn = true;
+					turn.innerHTML = '<h3>Computer Turn</h3>';
+				}
+				
+				//console.log(e.target);
+				e.target.classList.add("disableCursor");
+				playerArray.push(Number(e.target.id));
+				//console.log(playerArray);
+				if(includes(playerArray, winningPatterns)){
+					turn.innerHTML = "<h2>Player1 wins!!!</h2>";
+					win=true;
+					myTable.removeEventListener("click",displayMouseEvents);
+
+				}
+				
+			}
+			else{
+				
+				if(!e.target.classList.contains("disableCursor")){
+					count++;
+				 	e.target.innerHTML = "X";
+				 	playerTurn = true;
+					computerTurn = false;
+					turn.innerHTML = '<h3>Player1 Turn</h3>';
+				}
+				
+				e.target.classList.add("disableCursor");
+				computerArray.push(Number(e.target.id));
+				console.log(computerArray);
+				if(includes(computerArray, winningPatterns)){
+					turn.innerHTML = "<h2>Computer wins!!!</h2>";
+					win=true;
+					myTable.removeEventListener("click", displayMouseEvents);
+
+				}
+				
+			}
+			//console.log(count);
+			if(count===9&&win==false){
+				turn.innerHTML = "<h2>Its a Tie!!!</h2>";
+				myTable.removeEventListener("click", displayMouseEvents);
+			}
+			
+		}
+		
+
+	
+
+	</script>
+
+</body>
+</html>
